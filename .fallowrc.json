@@ -1,4 +1,28 @@
 {
-  "entry": ["src/renderer/index.tsx", "src/renderer/index.html", "scripts/notarize.mjs"],
-  "ignorePatterns": ["src/renderer/styles/tokens.js", "src/renderer/styles/tokens.d.ts"]
+  "entry": [
+    "src/renderer/index.tsx",
+    "src/renderer/index.html",
+    "src/main/index.ts",
+    "scripts/notarize.mjs"
+  ],
+  "ignorePatterns": [
+    "src/renderer/styles/tokens.js",
+    "src/renderer/styles/tokens.d.ts",
+    "__mocks__/electron.ts"
+  ],
+  "ignoreDependencies": [
+    "@hookform/resolvers",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-select",
+    "@radix-ui/react-tabs",
+    "react-hook-form",
+    "zod",
+    "eslint-config-airbnb",
+    "eslint-plugin-jsx-a11y",
+    "style-dictionary",
+    "@rollup/rollup-darwin-arm64",
+    "@rollup/rollup-darwin-x64",
+    "@rollup/rollup-win32-x64-gnu",
+    "@rollup/rollup-win32-x64-msvc"
+  ]
 }
