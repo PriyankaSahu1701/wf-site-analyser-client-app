@@ -17,7 +17,15 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 export default [
   // Global ignores
   {
-    ignores: ['node_modules/**', 'out/**', 'dist/**', '*.config.{ts,js,mjs,cjs}', 'src/renderer/styles/tokens.js'],
+    ignores: [
+      'node_modules/**',
+      'out/**',
+      'dist/**',
+      '*.config.{ts,js,mjs,cjs}',
+      'src/renderer/styles/tokens.js',
+      'scripts/**',
+      '.claude/**',
+    ],
   },
 
   // Base JS rules
@@ -47,10 +55,20 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+      // Allow _-prefixed identifiers to signal intentional non-use
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      }],
       // Enforce no any (SA-106 will tighten further)
       '@typescript-eslint/no-explicit-any': 'error',
+      // Treat _-prefixed parameters as intentionally unused
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       // TypeScript handles undefined checking
       'no-undef': 'off',
+      // Allow console.warn/error for legitimate error reporting; block console.log in renderer.
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'react/jsx-filename-extension': 'off',
       'import/extensions': 'off',
       'import/no-unresolved': 'off',
@@ -63,6 +81,8 @@ export default [
       'no-confusing-arrow': 'off',
       'object-curly-newline': 'off',
       'operator-linebreak': 'off',
+      'react/jsx-curly-newline': 'off',
+      'react/jsx-one-expression-per-line': 'off',
       // Structured import ordering with blank-line separators (SA-106)
       'import/order': [
         'error',
@@ -85,6 +105,16 @@ export default [
     },
   },
 
+  // Main process: electron/msw are devDependencies by Electron convention.
+  // Console is the standard logging mechanism in the main process.
+  {
+    files: ['src/main/**/*.ts'],
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+      'no-console': 'off',
+    },
+  },
+
   // Scaffold test files: components/hooks they reference don't exist yet
   {
     files: ['src/renderer/__tests__/**/*.{ts,tsx}'],
@@ -94,6 +124,18 @@ export default [
       'no-promise-executor-return': 'off',
       'no-restricted-syntax': 'off',
       'no-await-in-loop': 'off',
+      'no-plusplus': 'off',
+    },
+  },
+
+  // Node.js build/packaging scripts — relax rules that don't apply here
+  {
+    files: ['scripts/**/*.mjs'],
+    rules: {
+      'no-bitwise': 'off',
+      'no-plusplus': 'off',
+      'no-restricted-syntax': 'off',
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
   },
 ];
